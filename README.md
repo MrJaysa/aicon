@@ -22,9 +22,7 @@ The application runs as a single Node.js application, integrating the Vue fronte
 - **AI Framework:** Genkit (Node.js)
 - **Build Tool:** Vite
 - **Styling:** Tailwind CSS
-- **UI Components:** shadcn-vue
 - **Icons:** Lucide Vue Next
-- **Communication:** HTTP / WebSockets, where required
 - **Storage:** In-memory session state (no database)
 
 ## Prerequisites
@@ -72,18 +70,6 @@ export default defineConfig({
 
 ```
 
-Initialize shadcn-vue:
-
-```bash
-npx shadcn-vue@latest init
-```
-
-Initialize shadcn-vue:
-
-```bash
-npx shadcn-vue@latest init
-```
-
 ## Genkit Setup
 
 Install Genkit and the required model provider integration.
@@ -91,7 +77,8 @@ Install Genkit and the required model provider integration.
 For example, using Google Gemini:
 
 ```bash
-npm install genkit @genkit-ai/googleai
+npm install genkit  @genkit-ai/google-genai express
+npm install -D tsx @types/express
 ```
 
 Configure Genkit in the Node.js backend and define AI flows for handling chat requests.
@@ -114,6 +101,12 @@ Start the integrated application in development mode:
 npm run dev
 ```
 
+on another terminal
+
+```bash
+npm run dev:ai
+```
+
 The development setup should support both the Vue frontend and the Node.js backend.
 
 ## Production Build
@@ -130,16 +123,6 @@ Start the production server:
 npm run start
 ```
 
-## Genkit Developer UI
-
-To inspect and test Genkit flows during development, you can run the Genkit Developer UI separately:
-
-```bash
-npx genkit start
-```
-
-This is an optional development tool and does not require a separate production server.
-
 ## Conversation Management
 
 Conversations are maintained in memory and are not stored in a database.
@@ -151,5 +134,3 @@ Conversations are maintained in memory and are not stored in a database.
 ## License
 
 This project is open-source and available under the MIT License.
-
-# ai-chat-app
