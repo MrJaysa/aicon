@@ -1,13 +1,14 @@
 export async function streamChat(
   sessionId: string,
   message: string,
+  system: string | undefined,
   onToken: (text: string) => void,
   signal?: AbortSignal,
 ) {
   const res = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sessionId, message }),
+    body: JSON.stringify({ sessionId, message, system }),
     signal,
   })
   if (!res.ok || !res.body) throw new Error('Chat request failed')

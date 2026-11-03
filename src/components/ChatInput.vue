@@ -5,6 +5,8 @@ import { ref } from 'vue'
 const props = defineProps<{ busy: boolean }>()
 const emit = defineEmits<{ send: [text: string] }>()
 
+const model = 'gemini-3.5-flash-lite'
+
 const draft = ref('')
 
 function submit() {
@@ -44,5 +46,7 @@ function onKeydown(e: KeyboardEvent) {
         <ArrowUp class="size-5" />
       </button>
     </form>
+
+    <p class="mx-auto mt-2 max-w-3xl text-end text-xs text-neutral-500">{{ model }}</p>
   </footer>
 </template>

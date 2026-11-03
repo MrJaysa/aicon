@@ -10,9 +10,17 @@ export const ai = genkit({
 
 type Turn = { role: 'user' | 'model'; content: [{ text: string }] }
 
+const BASE_SYSTEM =
+  'You are a helpful, always maintain context, logical and a very concise assistant.'
+
+function buildSystem(custom?: string) {
+  if (!custom) return BASE_SYSTEM
+  return `${BASE_SYSTEM}\n\nThe user has given these instructions about how you should behave. Follow them; they take precedence over the defaults above:\n${custom}`
+}
+
 const SESSION_TTL_MS = 60 * 60 * 1000
 
-const sessions = new Map<string, { turns: Turn[]; lastUsed: number }>()
+const sessions = new Map<string, { turns: Turn[]; lastUsed: number; system?: string }>()
 
 export function clearSession(sessionId: string) {
   sessions.delete(sessionId)
@@ -32,15 +40,20 @@ export const chatFlow = ai.defineFlow(
     inputSchema: z.object({
       sessionId: z.string().min(1),
       message: z.string().min(1),
+      system: z.string().max(1000).optional(),
     }),
     outputSchema: z.string(),
     streamSchema: z.string(),
   },
-  async ({ sessionId, message }, { sendChunk }) => {
-    const session = sessions.get(sessionId) ?? { turns: [], lastUsed: Date.now() }
+  async ({ sessionId, message, system }, { sendChunk }) => {
+    const session = sessions.get(sessionId) ?? {
+      turns: [],
+      lastUsed: Date.now(),
+      system: system?.trim() || undefined,
+    }
 
     const { stream, response } = ai.generateStream({
-      system: 'You are a helpful, concise assistant.',
+      system: buildSystem(session.system),
       messages: session.turns,
       prompt: message,
     })

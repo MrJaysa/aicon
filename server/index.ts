@@ -9,9 +9,13 @@ const app = express()
 app.use(express.json())
 
 app.post('/api/chat', async (req, res) => {
-  const { sessionId, message } = req.body ?? {}
+  const { sessionId, message, system } = req.body ?? {}
   if (typeof sessionId !== 'string' || typeof message !== 'string' || !message.trim()) {
     res.status(400).json({ error: 'sessionId and message are required' })
+    return
+  }
+  if (system !== undefined && (typeof system !== 'string' || system.length > 1000)) {
+    res.status(400).json({ error: 'system must be a string of at most 1000 characters' })
     return
   }
 
@@ -21,7 +25,7 @@ app.post('/api/chat', async (req, res) => {
   res.flushHeaders()
 
   try {
-    const { stream, output } = chatFlow.stream({ sessionId, message })
+    const { stream, output } = chatFlow.stream({ sessionId, message, system })
     for await (const chunk of stream) {
       res.write(`data: ${JSON.stringify(chunk)}\n\n`)
     }

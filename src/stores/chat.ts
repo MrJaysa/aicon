@@ -12,6 +12,7 @@ export type ChatMessage = {
 export const useChatStore = defineStore('chat', () => {
   const sessionId = ref(crypto.randomUUID())
   const messages = ref<ChatMessage[]>([])
+  const instructions = ref('')
   const isStreaming = ref(false)
 
   let controller: AbortController | null = null
@@ -31,6 +32,7 @@ export const useChatStore = defineStore('chat', () => {
       await streamChat(
         sessionId.value,
         message,
+        instructions.value.trim() || undefined,
         (token) => {
           reply.content += token
         },
@@ -57,5 +59,5 @@ export const useChatStore = defineStore('chat', () => {
     } catch {}
   }
 
-  return { sessionId, messages, isStreaming, send, newChat }
+  return { sessionId, messages, instructions, isStreaming, send, newChat }
 })
