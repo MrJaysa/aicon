@@ -19,7 +19,7 @@ The application runs as a single Node.js application, integrating the Vue fronte
 
 - **Frontend:** Vue 3
 - **Backend:** Node.js
-- **AI Framework:** Firebase Genkit (Node.js)
+- **AI Framework:** Genkit (Node.js)
 - **Build Tool:** Vite
 - **Styling:** Tailwind CSS
 - **UI Components:** shadcn-vue
@@ -55,8 +55,21 @@ npm install
 Install Tailwind CSS and its dependencies:
 
 ```bash
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+npm install tailwindcss @tailwindcss/cli
+```
+
+Add the plugin to your vite.config.ts (or .js) file:
+
+```bash
+import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
+})
+
 ```
 
 Initialize shadcn-vue:
@@ -138,4 +151,5 @@ Conversations are maintained in memory and are not stored in a database.
 ## License
 
 This project is open-source and available under the MIT License.
+
 # ai-chat-app
