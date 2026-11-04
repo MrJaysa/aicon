@@ -20,7 +20,10 @@ watch(
   >
     <slot v-if="!messages.length" />
 
-    <div v-else class="mx-auto w-full max-w-3xl shrink-0 space-y-6 px-4 py-4">
+    <div
+      v-else
+      class="mx-auto w-full min-w-0 max-w-3xl shrink-0 space-y-5 px-3 py-4 sm:space-y-6 sm:px-4"
+    >
       <MessageBubble
         v-for="(m, i) in messages"
         :key="m.id"

@@ -78,12 +78,15 @@ function onClick(e: MouseEvent) {
   <div class="flex" :class="message.role === 'user' ? 'justify-end' : 'justify-start'">
     <div
       v-if="message.role === 'user'"
-      class="max-w-[80%] whitespace-pre-wrap rounded-3xl bg-[#303030] px-5 py-2.5 leading-7"
+      class="max-w-[85%] whitespace-pre-wrap rounded-3xl bg-[#303030] px-4 py-2.5 leading-7 wrap-anywhere sm:max-w-[80%] sm:px-5"
     >
       {{ message.content }}
     </div>
 
-    <div v-else-if="message.error" class="max-w-[90%] whitespace-pre-wrap leading-7 text-red-400">
+    <div
+      v-else-if="message.error"
+      class="max-w-[90%] whitespace-pre-wrap leading-7 wrap-anywhere text-red-400"
+    >
       {{ message.content }}
     </div>
 
@@ -245,6 +248,27 @@ function onClick(e: MouseEvent) {
   vertical-align: text-bottom;
   background: #d4d4d4;
   animation: md-caret 1s steps(2, start) infinite;
+}
+.markdown-body .code-head button {
+  padding: 0.25rem 0.5rem;
+  margin: -0.25rem -0.5rem;
+}
+@media (max-width: 639px) {
+  .markdown-body .code-block {
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    border-radius: 0.625rem;
+  }
+  .markdown-body .code-block pre {
+    padding: 0.75rem;
+    font-size: 0.8125rem;
+  }
+  .markdown-body h1 {
+    font-size: 1.35em;
+  }
+  .markdown-body h2 {
+    font-size: 1.2em;
+  }
 }
 @keyframes md-caret {
   to {

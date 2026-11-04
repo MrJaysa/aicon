@@ -39,6 +39,12 @@ const { messages, instructions, isStreaming } = storeToRefs(chat)
 .panel-enter-from,
 .panel-leave-to {
   opacity: 0;
-  transform: translateX(-1rem);
+  transform: translateY(-0.5rem);
+}
+@media (min-width: 1024px) {
+  .panel-enter-from,
+  .panel-leave-to {
+    transform: translateX(-1rem);
+  }
 }
 </style>
