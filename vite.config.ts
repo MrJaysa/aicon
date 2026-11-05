@@ -10,7 +10,7 @@ export default defineConfig(({ mode }) => {
 
   const proxy = {
     '/api': {
-      target: env.API_URL || "https://aicon-ai-backend-server-sjio.vercel.app",
+      target: "https://aicon-ai-backend-server-sjio.vercel.app",
       changeOrigin: true,
     },
   }
