@@ -1,6 +1,8 @@
+export type HistoryItem = { role: 'user' | 'model'; text: string }
+
 export async function streamChat(
-  sessionId: string,
   message: string,
+  history: HistoryItem[],
   system: string | undefined,
   onToken: (text: string) => void,
   signal?: AbortSignal,
@@ -8,7 +10,7 @@ export async function streamChat(
   const res = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sessionId, message, system }),
+    body: JSON.stringify({ message, history, system }),
     signal,
   })
   if (!res.ok || !res.body) throw new Error('Chat request failed')
@@ -34,8 +36,4 @@ export async function streamChat(
       onToken(data as string)
     }
   }
-}
-
-export async function deleteSession(sessionId: string) {
-  await fetch(`/api/chat/${encodeURIComponent(sessionId)}`, { method: 'DELETE' })
 }

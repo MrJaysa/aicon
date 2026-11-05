@@ -1,4 +1,4 @@
-import { deleteSession, streamChat } from '@/utils/chat'
+import { streamChat, type HistoryItem } from '@/utils/chat'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -9,17 +9,35 @@ export type ChatMessage = {
   error?: boolean
 }
 
+const MAX_HISTORY = 40
+
 export const useChatStore = defineStore('chat', () => {
-  const sessionId = ref(crypto.randomUUID())
   const messages = ref<ChatMessage[]>([])
   const instructions = ref('')
   const isStreaming = ref(false)
 
   let controller: AbortController | null = null
 
+  function buildHistory(): HistoryItem[] {
+    const out: HistoryItem[] = []
+    const list = messages.value
+    for (let i = 0; i < list.length; i++) {
+      const m = list[i]!
+      const next = list[i + 1]
+      if (m.role !== 'user' || !next || next.role !== 'assistant' || next.error || !next.content) {
+        continue
+      }
+      out.push({ role: 'user', text: m.content }, { role: 'model', text: next.content })
+      i++
+    }
+    return out.slice(-MAX_HISTORY)
+  }
+
   async function send(text: string) {
     const message = text.trim()
     if (!message || isStreaming.value) return
+
+    const history = buildHistory()
 
     messages.value.push({ id: crypto.randomUUID(), role: 'user', content: message })
     messages.value.push({ id: crypto.randomUUID(), role: 'assistant', content: '' })
@@ -30,8 +48,8 @@ export const useChatStore = defineStore('chat', () => {
 
     try {
       await streamChat(
-        sessionId.value,
         message,
+        history,
         instructions.value.trim() || undefined,
         (token) => {
           reply.content += token
@@ -48,16 +66,11 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  async function newChat() {
+  function newChat() {
     controller?.abort()
-    const oldId = sessionId.value
     messages.value = []
     isStreaming.value = false
-    sessionId.value = crypto.randomUUID()
-    try {
-      await deleteSession(oldId)
-    } catch {}
   }
 
-  return { sessionId, messages, instructions, isStreaming, send, newChat }
+  return { messages, instructions, isStreaming, send, newChat }
 })
